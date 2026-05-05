@@ -1,0 +1,43 @@
+format_version: "13"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+    - GRADLE_BUILD_FILE_PATH: android/build.gradle
+    - GRADLEW_PATH: android/gradlew
+    - MODULE: app
+    - VARIANT: debug
+
+workflows:
+  test:
+    summary: Run JavaScript tests
+    steps:
+      - git-clone@8: {}
+      - restore-npm-cache@3: {}
+      - npm@1:
+          inputs:
+            - command: install
+      - save-npm-cache@1: {}
+      - npm@1:
+          title: Run tests
+          inputs:
+            - command: test -- --passWithNoTests
+
+  build-apk:
+    summary: Build debug APK for Android
+    steps:
+      - git-clone@8: {}
+      - restore-npm-cache@3: {}
+      - npm@1:
+          inputs:
+            - command: install
+      - save-npm-cache@1: {}
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: $GRADLEW_PATH
+      - android-build@1:
+          inputs:
+            - project_location: android
+            - module: $MODULE
+            - variant: $VARIANT
+      - deploy-to-bitrise-io@2: {}
