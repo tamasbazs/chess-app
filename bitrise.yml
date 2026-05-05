@@ -1,6 +1,10 @@
 format_version: "13"
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
+meta:
+  bitrise.io:
+    stack: linux-docker-android-22.04
+
 app:
   envs:
     - GRADLE_BUILD_FILE_PATH: android/build.gradle
